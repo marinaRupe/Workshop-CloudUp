@@ -6,6 +6,6 @@ export interface IStudentProps {
 
 export default class Student extends React.Component<IStudentProps, {}> {
     public render() {
-        return <div>{this.props.name}</div>;
+        return <div>{this.props.name}</div>
     }
 }

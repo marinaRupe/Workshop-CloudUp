@@ -10,7 +10,7 @@ interface ILectureProps {
 }
 
 interface ILectureState {
-    newStudentName?: string;
+    newStudentName: string;
     students: Array<IStudentProps>;
 }
 
@@ -18,6 +18,7 @@ export default class Lecture extends React.Component<ILectureProps, ILectureStat
     constructor(props: ILectureProps) {
         super(props);
         this.state = {
+            newStudentName: '',
             students: props.initialStudents ? props.initialStudents : []
         };
     }
@@ -46,10 +47,15 @@ export default class Lecture extends React.Component<ILectureProps, ILectureStat
     }
 
     private _addStudent = () => {
-        const newStudentList = {...this.state.students};
+        if (!this.state.newStudentName) {
+            return;
+        }
+
+        const newStudentList = this.state.students.slice();
         newStudentList.push({name: this.state.newStudentName});
         this.setState({
-            students: newStudentList
+            students: newStudentList,
+            newStudentName: ''
         });
     }
 
