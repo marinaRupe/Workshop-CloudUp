@@ -4,25 +4,28 @@ import Lecturer from './lecturer';
 
 interface ILectureProps {
     lecturerName: string;
-    students: Array<IStudentProps>;
-    onStartLecture();
-    onEndLecture();
+    initialStudents?: Array<IStudentProps>;
+    onStartLecture?();
+    onExamStarted(students: Array<IStudentProps>);
 }
 
 interface ILectureState {
-    examStarted: boolean;
+    newStudentName?: string;
+    students: Array<IStudentProps>;
 }
 
 export default class Lecture extends React.Component<ILectureProps, ILectureState> {
     constructor(props: ILectureProps) {
         super(props);
         this.state = {
-            examStarted: false
+            students: props.initialStudents ? props.initialStudents : []
         };
     }
 
     public componentDidMount() {
-        this.props.onStartLecture();
+        if (this.props.onStartLecture) {
+            this.props.onStartLecture();
+        }
     }
 
     public render() {
@@ -30,18 +33,33 @@ export default class Lecture extends React.Component<ILectureProps, ILectureStat
             <Lecturer name={this.props.lecturerName} onExamStart={this._onStartExam} />
             <div>
                 {
-                    this.props.students.map((student, i) =>
+                    this.state.students.map((student, i) =>
                         <Student key={i} {...student} />
                     )
                 }
             </div>
-            <button onClick={this.props.onEndLecture()}> Finish Lecutre </button>
+            <div>
+                <input value={this.state.newStudentName} onChange={this._onInputChange} />
+                <button onClick={this._addStudent}> Add Student </button>
+            </div>
         </div>;
     }
 
-    private _onStartExam = () => {
+    private _addStudent = () => {
+        const newStudentList = {...this.state.students};
+        newStudentList.push({name: this.state.newStudentName});
         this.setState({
-            examStarted: true
+            students: newStudentList
         });
+    }
+
+    private _onInputChange = (e: any) => {
+        this.setState({
+            newStudentName: e.target.value
+        });
+    }
+
+    private _onStartExam = () => {
+        this.props.onExamStarted(this.state.students);
     }
 }
