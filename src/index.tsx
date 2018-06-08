@@ -15,7 +15,7 @@ class Index extends React.Component<{}, AppState> {
         this.state = {
             gifSource: ''
         };
-    }
+    } 
 
     public componentDidMount() {
         this.searchGiphy('');
